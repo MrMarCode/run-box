@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.git/
+.gitignore
+*.md
+specs/
+tests/
+.specify/
+.windsurf/
+*.log
+.env*
+coverage/
+.DS_Store
+Thumbs.db
