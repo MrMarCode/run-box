@@ -4,47 +4,46 @@ MCP server that executes arbitrary shell commands over HTTP transport. Designed 
 
 ## Quick Start
 
-### Local Development
+### Using `start-run-box.sh`
 
 ```bash
-npm install
-npm run build
-node dist/index.js
-```
+# Build the image
+./build.sh
 
-The daemon starts on `http://127.0.0.1:3100`. Verify with:
+# Start with a single mount directory
+./start-run-box.sh /home/user/Code
 
-```bash
+# Start with multiple mount directories (comma-separated)
+./start-run-box.sh /home/user/Code,/home/user/Documents
+
+# Force-restart a running instance on a custom port
+./start-run-box.sh -f /home/user/Code 3200
+
+# Verify
 curl http://127.0.0.1:3100/health
 # {"status":"ok"}
 ```
 
-### Container
+### Using podman directly
+
+Docker may be used in place of podman — the commands are identical.
 
 ```bash
+# Build the image
 ./build.sh
-podman run --rm -p 3100:3100 -v /path/to/code:/workspace localhost/run-box
+
+# Mount host dirs to the SAME absolute path inside the container
+# so the model sees identical paths
+podman run --rm -p 3100:3100 \
+   -v /home/user/Code:/home/user/Code \
+   localhost/run-box
+
+# Verify
+curl http://127.0.0.1:3100/health
+# {"status":"ok"}
 ```
 
 ## MCP Client Configuration
-
-```jsonc
-{
-   "mcpServers": {
-      "run-box": {
-         "url": "http://127.0.0.1:3100/mcp"
-      }
-   }
-}
-```
-
-### Container (with volume mount)
-
-Start the container first, then point your MCP client at it:
-
-```bash
-podman run --rm -p 3100:3100 -v /home/user/Code:/workspace localhost/run-box
-```
 
 ```jsonc
 {
